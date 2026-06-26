@@ -1,3 +1,4 @@
+// TarjetaRepository.java
 package com.hvb.loyalty.repository;
 
 import com.hvb.loyalty.entity.Tarjeta;
@@ -6,4 +7,5 @@ import java.util.Optional;
 
 public interface TarjetaRepository extends JpaRepository<Tarjeta, Long> {
     Optional<Tarjeta> findByCodigoQr(String codigoQr);
+    Optional<Tarjeta> findByClienteId(Long clienteId);
 }

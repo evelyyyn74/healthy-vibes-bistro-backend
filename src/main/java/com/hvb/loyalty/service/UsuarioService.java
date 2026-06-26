@@ -9,6 +9,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -21,51 +22,75 @@ public class UsuarioService {
     }
 
     public List<UsuarioResponseDTO> listar() {
-        return usuarioRepository.findAll().stream().map(UsuarioUtil::toResponse).toList();
+        return usuarioRepository.findAll().stream()
+                .map(this::aResponse)
+                .collect(Collectors.toList());
     }
 
-    public UsuarioResponseDTO obtener(Long id) {
-        Usuario u = usuarioRepository.findById(id)
+    public UsuarioResponseDTO obtenerPorId(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        return UsuarioUtil.toResponse(u);
+        return aResponse(usuario);
     }
 
     public UsuarioResponseDTO crear(UsuarioRequestDTO dto) {
-        if (dto.getPassword() == null || dto.getPassword().isBlank())
-            throw new RuntimeException("La contraseña es obligatoria");
-        if (usuarioRepository.existsByCorreo(dto.getCorreo()))
-            throw new RuntimeException("Ya existe un usuario con ese correo");
+        if (dto.getPassword() == null || dto.getPassword().isBlank()) {
+            throw new RuntimeException("La contraseña es obligatoria al crear un usuario");
+        }
+        if (usuarioRepository.existsByUsuario(dto.getUsuario())) {
+            throw new RuntimeException("Ya existe un usuario con ese nombre de usuario");
+        }
 
-        Usuario u = new Usuario();
-        u.setNombre(dto.getNombre());
-        u.setCorreo(dto.getCorreo());
-        u.setPassword(passwordEncoder.encode(dto.getPassword()));
-        u.setTelefono(dto.getTelefono());
-        u.setRol(dto.getRol());
-        return UsuarioUtil.toResponse(usuarioRepository.save(u));
+        Usuario usuario = new Usuario();
+        UsuarioUtil.actualizarDatos(usuario, dto);
+        usuario.setPassword(passwordEncoder.encode(dto.getPassword())); // hashea
+        usuario.setActivo(true);
+
+        return aResponse(usuarioRepository.save(usuario));
     }
 
     public UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO dto) {
-        Usuario u = usuarioRepository.findById(id)
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!u.getCorreo().equals(dto.getCorreo()) && usuarioRepository.existsByCorreo(dto.getCorreo()))
-            throw new RuntimeException("Ya existe un usuario con ese correo");
+        if (!usuario.getUsuario().equals(dto.getUsuario())
+                && usuarioRepository.existsByUsuario(dto.getUsuario())) {
+            throw new RuntimeException("Ya existe un usuario con ese nombre de usuario");
+        }
 
-        u.setNombre(dto.getNombre());
-        u.setCorreo(dto.getCorreo());
-        u.setTelefono(dto.getTelefono());
-        u.setRol(dto.getRol());
-        if (dto.getPassword() != null && !dto.getPassword().isBlank())
-            u.setPassword(passwordEncoder.encode(dto.getPassword()));
+        UsuarioUtil.actualizarDatos(usuario, dto);
 
-        return UsuarioUtil.toResponse(usuarioRepository.save(u));
+        // Solo cambia la contraseña si mandaron una nueva
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            usuario.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        return aResponse(usuarioRepository.save(usuario));
     }
 
-    public UsuarioResponseDTO cambiarEstado(Long id) {
-        Usuario u = usuarioRepository.findById(id)
+    public void cambiarEstado(Long id, Boolean activo) {
+        Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        u.setActivo(!u.getActivo());
-        return UsuarioUtil.toResponse(usuarioRepository.save(u));
+        usuario.setActivo(activo);
+        usuarioRepository.save(usuario);
+    }
+
+    public void eliminar(Long id) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        usuarioRepository.delete(usuario);
+    }
+
+    private UsuarioResponseDTO aResponse(Usuario u) {
+        UsuarioResponseDTO dto = new UsuarioResponseDTO();
+        dto.setId(u.getId());
+        dto.setNombre(u.getNombre());
+        dto.setUsuario(u.getUsuario());
+        dto.setRol(u.getRol());
+        dto.setCorreo(u.getCorreo());
+        dto.setTelefono(u.getTelefono());
+        dto.setActivo(u.getActivo());
+        dto.setFechaCreacion(u.getFechaCreacion());
+        return dto;
     }
 }

@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "canjes")
-public class Canje {
+@Table(name = "transacciones")
+public class Transaccion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,13 +18,16 @@ public class Canje {
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+    @Column(length = 30)
+    private String tipo;
 
-    @ManyToOne
-    @JoinColumn(name = "premio_id")
-    private Premio premio;
+    private Integer puntos;
 
-    @Column(name = "puntos_descontados")
-    private Integer puntosDescontados;
+    @Column(name = "descripcion", length = 255)
+    private String descripcion;
+
+    @Column(length = 50)
+    private String categoria;
 
     private LocalDate fecha;
 
@@ -37,11 +40,17 @@ public class Canje {
     public Usuario getUsuario() { return usuario; }
     public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public Premio getPremio() { return premio; }
-    public void setPremio(Premio premio) { this.premio = premio; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
-    public Integer getPuntosDescontados() { return puntosDescontados; }
-    public void setPuntosDescontados(Integer puntosDescontados) { this.puntosDescontados = puntosDescontados; }
+    public Integer getPuntos() { return puntos; }
+    public void setPuntos(Integer puntos) { this.puntos = puntos; }
+
+    public String getDescripcion() { return descripcion; }
+    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+
+    public String getCategoria() { return categoria; }
+    public void setCategoria(String categoria) { this.categoria = categoria; }
 
     public LocalDate getFecha() { return fecha; }
     public void setFecha(LocalDate fecha) { this.fecha = fecha; }

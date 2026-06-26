@@ -1,7 +1,7 @@
 package com.hvb.loyalty.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "clientes")
@@ -14,36 +14,31 @@ public class Cliente {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String correo;
+    @Column(length = 100)
+    private String apellidos;
 
-    @Column(length = 15)
+    @Column(nullable = false, unique = true, length = 15)
     private String telefono;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private NivelCliente nivel;
+    @Column(unique = true, length = 100)
+    private String correo;
 
-    @Column(nullable = false)
-    private Integer puntos;
+    @Column(name = "fecha_registro")
+    private LocalDate fechaRegistro;
 
     @Column(nullable = false)
     private Boolean activo;
 
-    @Column(name = "fecha_registro", nullable = false, updatable = false)
-    private LocalDateTime fechaRegistro;
+    @ManyToOne
+    @JoinColumn(name = "nivel_id")
+    private Nivel nivel;
 
     @Column(name = "fecha_ultimo_reinicio")
-    private LocalDateTime fechaUltimoReinicio;
-
-    @OneToOne(mappedBy = "cliente", cascade = CascadeType.ALL)
-    private Tarjeta tarjeta;
+    private java.time.LocalDateTime fechaUltimoReinicio;
 
     @PrePersist
     protected void onCreate() {
-        this.fechaRegistro = LocalDateTime.now();
-        if (this.puntos == null) this.puntos = 0;
-        if (this.nivel == null) this.nivel = NivelCliente.NUEVO;
+        if (this.fechaRegistro == null) this.fechaRegistro = LocalDate.now();
         if (this.activo == null) this.activo = true;
     }
 
@@ -53,27 +48,24 @@ public class Cliente {
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
 
-    public String getCorreo() { return correo; }
-    public void setCorreo(String correo) { this.correo = correo; }
+    public String getApellidos() { return apellidos; }
+    public void setApellidos(String apellidos) { this.apellidos = apellidos; }
 
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
 
-    public NivelCliente getNivel() { return nivel; }
-    public void setNivel(NivelCliente nivel) { this.nivel = nivel; }
+    public String getCorreo() { return correo; }
+    public void setCorreo(String correo) { this.correo = correo; }
 
-    public Integer getPuntos() { return puntos; }
-    public void setPuntos(Integer puntos) { this.puntos = puntos; }
+    public LocalDate getFechaRegistro() { return fechaRegistro; }
+    public void setFechaRegistro(LocalDate fechaRegistro) { this.fechaRegistro = fechaRegistro; }
 
     public Boolean getActivo() { return activo; }
     public void setActivo(Boolean activo) { this.activo = activo; }
 
-    public LocalDateTime getFechaRegistro() { return fechaRegistro; }
-    public void setFechaRegistro(LocalDateTime fechaRegistro) { this.fechaRegistro = fechaRegistro; }
+    public Nivel getNivel() { return nivel; }
+    public void setNivel(Nivel nivel) { this.nivel = nivel; }
 
-    public LocalDateTime getFechaUltimoReinicio() { return fechaUltimoReinicio; }
-    public void setFechaUltimoReinicio(LocalDateTime fechaUltimoReinicio) { this.fechaUltimoReinicio = fechaUltimoReinicio; }
-
-    public Tarjeta getTarjeta() { return tarjeta; }
-    public void setTarjeta(Tarjeta tarjeta) { this.tarjeta = tarjeta; }
+    public java.time.LocalDateTime getFechaUltimoReinicio() { return fechaUltimoReinicio; }
+    public void setFechaUltimoReinicio(java.time.LocalDateTime f) { this.fechaUltimoReinicio = f; }
 }

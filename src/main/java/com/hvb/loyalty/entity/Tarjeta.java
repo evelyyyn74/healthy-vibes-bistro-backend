@@ -1,8 +1,6 @@
 package com.hvb.loyalty.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "tarjetas")
@@ -12,57 +10,64 @@ public class Tarjeta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 36)
-    private String serial;
+    @ManyToOne
+    @JoinColumn(name = "cliente_id", nullable = false)
+    private Cliente cliente;
 
-    @Column(name = "codigo_qr", nullable = false, unique = true)
+    @ManyToOne
+    @JoinColumn(name = "nivel_id")
+    private Nivel nivel;
+
+    @Column(name = "codigo_qr", unique = true)
     private String codigoQr;
 
-    @Column(nullable = false)
-    private Boolean activa;
+    @Column(name = "puntos_acumulados")
+    private Integer puntosAcumulados;
 
-    @Column(name = "apple_pass_serial")
-    private String applePassSerial;
+    @Column(name = "puntos_canjeados")
+    private Integer puntosCanjeados;
 
-    @Column(name = "google_object_id")
-    private String googleObjectId;
+    @Column(name = "activo")
+    private Boolean activo;
 
-    @Column(name = "fecha_creacion", nullable = false, updatable = false)
-    private LocalDateTime fechaCreacion;
+    @Column(name = "fecha_creacion", updatable = false)
+    private java.time.LocalDateTime fechaCreacion;
 
-    @OneToOne
-    @JoinColumn(name = "cliente_id", nullable = false, unique = true)
-    private Cliente cliente;
+    @Column(name = "serial")
+    private String serial;
 
     @PrePersist
     protected void onCreate() {
-        this.fechaCreacion = LocalDateTime.now();
-        if (this.serial == null) this.serial = UUID.randomUUID().toString();
-        if (this.codigoQr == null) this.codigoQr = UUID.randomUUID().toString();
-        if (this.activa == null) this.activa = true;
+        if (this.fechaCreacion == null) {
+            this.fechaCreacion = java.time.LocalDateTime.now();
+        }
     }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public String getSerial() { return serial; }
-    public void setSerial(String serial) { this.serial = serial; }
+    public Cliente getCliente() { return cliente; }
+    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+
+    public Nivel getNivel() { return nivel; }
+    public void setNivel(Nivel nivel) { this.nivel = nivel; }
 
     public String getCodigoQr() { return codigoQr; }
     public void setCodigoQr(String codigoQr) { this.codigoQr = codigoQr; }
 
-    public Boolean getActiva() { return activa; }
-    public void setActiva(Boolean activa) { this.activa = activa; }
+    public Integer getPuntosAcumulados() { return puntosAcumulados; }
+    public void setPuntosAcumulados(Integer puntosAcumulados) { this.puntosAcumulados = puntosAcumulados; }
 
-    public String getApplePassSerial() { return applePassSerial; }
-    public void setApplePassSerial(String applePassSerial) { this.applePassSerial = applePassSerial; }
+    public Integer getPuntosCanjeados() { return puntosCanjeados; }
+    public void setPuntosCanjeados(Integer puntosCanjeados) { this.puntosCanjeados = puntosCanjeados; }
 
-    public String getGoogleObjectId() { return googleObjectId; }
-    public void setGoogleObjectId(String googleObjectId) { this.googleObjectId = googleObjectId; }
+    public Boolean getActivo() { return activo; }
+    public void setActivo(Boolean activo) { this.activo = activo; }
 
-    public LocalDateTime getFechaCreacion() { return fechaCreacion; }
-    public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+    public java.time.LocalDateTime getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(java.time.LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 
-    public Cliente getCliente() { return cliente; }
-    public void setCliente(Cliente cliente) { this.cliente = cliente; }
+    public String getSerial() { return serial; }
+    public void setSerial(String serial) { this.serial = serial; }
+
 }

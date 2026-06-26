@@ -14,30 +14,31 @@ public class Usuario {
     @Column(nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(unique = true, length = 100)
     private String correo;
 
     @Column(nullable = false)
     private String password;
 
+    @Column(nullable = false, length = 30)
+    private String rol; // "ADMIN" o "MESERO"
+
     @Column(length = 15)
     private String telefono;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
-    private RolUsuario rol;
 
     @Column(nullable = false)
     private Boolean activo;
 
-    @Column(name = "fecha_creacion", nullable = false, updatable = false)
+    @Column(name = "fecha_creacion", updatable = false)
     private LocalDateTime fechaCreacion;
+
+    @Column(nullable = false, unique = true, length = 50)
+    private String usuario;
 
     @PrePersist
     protected void onCreate() {
-        this.fechaCreacion = LocalDateTime.now();
+        if (this.fechaCreacion == null) this.fechaCreacion = LocalDateTime.now();
         if (this.activo == null) this.activo = true;
-        if (this.rol == null) this.rol = RolUsuario.MESERO;
     }
 
     public Long getId() { return id; }
@@ -52,15 +53,18 @@ public class Usuario {
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
 
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
+
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
-
-    public RolUsuario getRol() { return rol; }
-    public void setRol(RolUsuario rol) { this.rol = rol; }
 
     public Boolean getActivo() { return activo; }
     public void setActivo(Boolean activo) { this.activo = activo; }
 
     public LocalDateTime getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDateTime fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+
+    public String getUsuario() { return usuario; }
+    public void setUsuario(String usuario) { this.usuario = usuario; }
 }
