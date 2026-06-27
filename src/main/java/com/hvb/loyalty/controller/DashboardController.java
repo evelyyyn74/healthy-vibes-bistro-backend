@@ -19,4 +19,9 @@ public class DashboardController {
     public ResponseEntity<DashboardResponseDTO> resumen() {
         return ResponseEntity.ok(dashboardService.obtenerResumen());
     }
+
+    @GetMapping("/puntos-por-mes")
+    public ResponseEntity<?> puntosPorMes() {
+        return ResponseEntity.ok(dashboardService.puntosPorMes());
+    }
 }
