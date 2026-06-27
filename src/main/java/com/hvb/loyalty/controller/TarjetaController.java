@@ -50,4 +50,16 @@ public class TarjetaController {
             return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
         }
     }
+
+    @PatchMapping("/cliente/{clienteId}/reiniciar")
+    public ResponseEntity<?> reiniciarPuntos(@PathVariable Long clienteId) {
+        try {
+            tarjetaService.reiniciarPuntos(clienteId);
+            return ResponseEntity.ok(Map.of("mensaje", "Puntos reiniciados"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(400).body(Map.of("error", e.getMessage()));
+        }
+    }
+
+
 }

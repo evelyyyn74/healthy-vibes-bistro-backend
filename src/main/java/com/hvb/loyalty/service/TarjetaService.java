@@ -89,4 +89,12 @@ public class TarjetaService {
         }
         return dto;
     }
+    public void reiniciarPuntos(Long clienteId) {
+        Tarjeta tarjeta = tarjetaRepository.findAll().stream()
+                .filter(t -> t.getCliente() != null && t.getCliente().getId().equals(clienteId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Este cliente no tiene tarjeta"));
+        tarjeta.setPuntosAcumulados(0);
+        tarjetaRepository.save(tarjeta);
+    }
 }

@@ -11,6 +11,9 @@ public class ClienteResponseDTO {
     private String correo;
     private LocalDate fechaRegistro;
     private Boolean activo;
+    private String nivel; // nombre del nivel, para mostrar y filtrar
+    private Integer puntos;       // puntos acumulados de su tarjeta
+    private String codigoQr;      // código QR de su tarjeta
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -32,4 +35,13 @@ public class ClienteResponseDTO {
 
     public Boolean getActivo() { return activo; }
     public void setActivo(Boolean activo) { this.activo = activo; }
+
+    public String getNivel() { return nivel; }
+    public void setNivel(String nivel) { this.nivel = nivel; }
+
+    public Integer getPuntos() { return puntos; }
+    public void setPuntos(Integer puntos) { this.puntos = puntos; }
+
+    public String getCodigoQr() { return codigoQr; }
+    public void setCodigoQr(String codigoQr) { this.codigoQr = codigoQr; }
 }

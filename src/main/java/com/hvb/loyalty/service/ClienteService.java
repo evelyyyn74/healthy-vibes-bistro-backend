@@ -15,10 +15,14 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final TarjetaService tarjetaService;
+    private final com.hvb.loyalty.repository.TarjetaRepository tarjetaRepository;
 
-    public ClienteService(ClienteRepository clienteRepository, TarjetaService tarjetaService) {
+    public ClienteService(ClienteRepository clienteRepository,
+                          TarjetaService tarjetaService,
+                          com.hvb.loyalty.repository.TarjetaRepository tarjetaRepository) {
         this.clienteRepository = clienteRepository;
         this.tarjetaService = tarjetaService;
+        this.tarjetaRepository = tarjetaRepository;
     }
 
     public List<ClienteResponseDTO> listar() {
@@ -75,6 +79,17 @@ public class ClienteService {
         dto.setCorreo(c.getCorreo());
         dto.setFechaRegistro(c.getFechaRegistro());
         dto.setActivo(c.getActivo());
+        dto.setNivel(c.getNivel() != null ? c.getNivel().getNombre() : "Nuevo");
+
+        // Datos de su tarjeta (puntos y QR)
+        tarjetaRepository.findAll().stream()
+                .filter(t -> t.getCliente() != null && t.getCliente().getId().equals(c.getId()))
+                .findFirst()
+                .ifPresent(t -> {
+                    dto.setPuntos(t.getPuntosAcumulados());
+                    dto.setCodigoQr(t.getCodigoQr());
+                });
+
         return dto;
     }
 }

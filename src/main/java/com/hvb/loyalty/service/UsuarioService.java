@@ -53,7 +53,8 @@ public class UsuarioService {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        if (!usuario.getUsuario().equals(dto.getUsuario())
+        if (dto.getUsuario() != null
+                && !dto.getUsuario().equals(usuario.getUsuario())
                 && usuarioRepository.existsByUsuario(dto.getUsuario())) {
             throw new RuntimeException("Ya existe un usuario con ese nombre de usuario");
         }
