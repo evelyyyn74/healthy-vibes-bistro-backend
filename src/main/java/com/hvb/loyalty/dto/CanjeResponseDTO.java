@@ -10,6 +10,8 @@ public class CanjeResponseDTO {
     private Long tarjetaId;
     private String usuarioNombre;
     private String premioNombre;
+    private String clienteNombre;
+    private String clienteNivel;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -28,4 +30,10 @@ public class CanjeResponseDTO {
 
     public String getPremioNombre() { return premioNombre; }
     public void setPremioNombre(String premioNombre) { this.premioNombre = premioNombre; }
+
+    public String getClienteNombre() { return clienteNombre; }
+    public void setClienteNombre(String clienteNombre) { this.clienteNombre = clienteNombre; }
+
+    public String getClienteNivel() { return clienteNivel; }
+    public void setClienteNivel(String clienteNivel) { this.clienteNivel = clienteNivel; }
 }

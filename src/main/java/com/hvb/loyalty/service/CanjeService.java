@@ -2,10 +2,7 @@ package com.hvb.loyalty.service;
 
 import com.hvb.loyalty.dto.CanjeRequestDTO;
 import com.hvb.loyalty.dto.CanjeResponseDTO;
-import com.hvb.loyalty.entity.Canje;
-import com.hvb.loyalty.entity.Premio;
-import com.hvb.loyalty.entity.Tarjeta;
-import com.hvb.loyalty.entity.Usuario;
+import com.hvb.loyalty.entity.*;
 import com.hvb.loyalty.repository.CanjeRepository;
 import com.hvb.loyalty.repository.PremioRepository;
 import com.hvb.loyalty.repository.TarjetaRepository;
@@ -100,7 +97,14 @@ public class CanjeService {
         dto.setId(c.getId());
         dto.setPuntosDescontados(c.getPuntosDescontados());
         dto.setFecha(c.getFecha());
-        if (c.getTarjeta() != null) dto.setTarjetaId(c.getTarjeta().getId());
+        if (c.getTarjeta() != null) {
+            dto.setTarjetaId(c.getTarjeta().getId());
+            if (c.getTarjeta().getCliente() != null) {
+                Cliente cliente = c.getTarjeta().getCliente();
+                dto.setClienteNombre(cliente.getNombre() + " " + (cliente.getApellidos() != null ? cliente.getApellidos() : ""));
+                dto.setClienteNivel(c.getTarjeta().getNivel() != null ? c.getTarjeta().getNivel().getNombre() : "—");
+            }
+        }
         if (c.getUsuario() != null) dto.setUsuarioNombre(c.getUsuario().getNombre());
         if (c.getPremio() != null) dto.setPremioNombre(c.getPremio().getNombre());
         return dto;
