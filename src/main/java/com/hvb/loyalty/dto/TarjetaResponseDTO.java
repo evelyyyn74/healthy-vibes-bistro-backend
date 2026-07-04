@@ -10,6 +10,13 @@ public class TarjetaResponseDTO {
     private Long clienteId;
     private String clienteNombre;
     private String nivelNombre;
+    private String clienteApellidos;
+    private String clienteTelefono;
+    private String clienteCorreo;
+    private Integer nivelPuntosMax;
+    private Integer puntosParaRecompensa;
+    private Integer recompensasObtenidas;
+
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -34,4 +41,22 @@ public class TarjetaResponseDTO {
 
     public String getNivelNombre() { return nivelNombre; }
     public void setNivelNombre(String nivelNombre) { this.nivelNombre = nivelNombre; }
+
+    public String getClienteApellidos() { return clienteApellidos; }
+    public void setClienteApellidos(String clienteApellidos) { this.clienteApellidos = clienteApellidos; }
+
+    public String getClienteTelefono() { return clienteTelefono; }
+    public void setClienteTelefono(String clienteTelefono) { this.clienteTelefono = clienteTelefono; }
+
+    public String getClienteCorreo() { return clienteCorreo; }
+    public void setClienteCorreo(String clienteCorreo) { this.clienteCorreo = clienteCorreo; }
+
+    public Integer getNivelPuntosMax() { return nivelPuntosMax; }
+    public void setNivelPuntosMax(Integer nivelPuntosMax) { this.nivelPuntosMax = nivelPuntosMax; }
+
+    public Integer getPuntosParaRecompensa() { return puntosParaRecompensa; }
+    public void setPuntosParaRecompensa(Integer puntosParaRecompensa) { this.puntosParaRecompensa = puntosParaRecompensa; }
+
+    public Integer getRecompensasObtenidas() { return recompensasObtenidas; }
+    public void setRecompensasObtenidas(Integer recompensasObtenidas) { this.recompensasObtenidas = recompensasObtenidas; }
 }
