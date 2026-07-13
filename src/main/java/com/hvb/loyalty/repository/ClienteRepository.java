@@ -1,4 +1,3 @@
-// ClienteRepository.java
 package com.hvb.loyalty.repository;
 
 import com.hvb.loyalty.entity.Cliente;
@@ -8,4 +7,5 @@ import java.util.Optional;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     Optional<Cliente> findByTelefono(String telefono);
     boolean existsByTelefono(String telefono);
+    boolean existsByCorreo(String correo);
 }

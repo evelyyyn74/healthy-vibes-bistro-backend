@@ -36,11 +36,22 @@ public class Tarjeta {
     @Column(name = "serial")
     private String serial;
 
+    @Column(name = "wallet_agregado")
+    private Boolean walletAgregado;
+
+    @Column(name = "wallet_pospuesto_en")
+    private java.time.LocalDateTime walletPospuestoEn;
+
+    @Column(name = "recordatorio_enviado")
+    private Boolean recordatorioEnviado;
+
     @PrePersist
     protected void onCreate() {
         if (this.fechaCreacion == null) {
             this.fechaCreacion = java.time.LocalDateTime.now();
         }
+        if (this.walletAgregado == null) this.walletAgregado = false;
+        if (this.recordatorioEnviado == null) this.recordatorioEnviado = false;
     }
 
     public Long getId() { return id; }
@@ -70,4 +81,12 @@ public class Tarjeta {
     public String getSerial() { return serial; }
     public void setSerial(String serial) { this.serial = serial; }
 
+    public Boolean getWalletAgregado() { return walletAgregado; }
+    public void setWalletAgregado(Boolean walletAgregado) { this.walletAgregado = walletAgregado; }
+
+    public java.time.LocalDateTime getWalletPospuestoEn() { return walletPospuestoEn; }
+    public void setWalletPospuestoEn(java.time.LocalDateTime walletPospuestoEn) { this.walletPospuestoEn = walletPospuestoEn; }
+
+    public Boolean getRecordatorioEnviado() { return recordatorioEnviado; }
+    public void setRecordatorioEnviado(Boolean recordatorioEnviado) { this.recordatorioEnviado = recordatorioEnviado; }
 }

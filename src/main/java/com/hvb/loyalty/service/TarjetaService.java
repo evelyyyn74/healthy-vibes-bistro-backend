@@ -7,6 +7,7 @@ import com.hvb.loyalty.entity.Tarjeta;
 import com.hvb.loyalty.repository.NivelRepository;
 import com.hvb.loyalty.repository.TarjetaRepository;
 import org.springframework.stereotype.Service;
+import com.hvb.loyalty.repository.CanjeRepository;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,10 +18,12 @@ public class TarjetaService {
 
     private final TarjetaRepository tarjetaRepository;
     private final NivelRepository nivelRepository;
+    private final CanjeRepository canjeRepository;
 
-    public TarjetaService(TarjetaRepository tarjetaRepository, NivelRepository nivelRepository) {
+    public TarjetaService(TarjetaRepository tarjetaRepository, NivelRepository nivelRepository, CanjeRepository canjeRepository) {
         this.tarjetaRepository = tarjetaRepository;
         this.nivelRepository = nivelRepository;
+        this.canjeRepository = canjeRepository;
     }
 
     public List<TarjetaResponseDTO> listar() {
@@ -80,12 +83,23 @@ public class TarjetaService {
         dto.setPuntosAcumulados(t.getPuntosAcumulados());
         dto.setPuntosCanjeados(t.getPuntosCanjeados());
         dto.setActivo(t.getActivo());
+
         if (t.getCliente() != null) {
             dto.setClienteId(t.getCliente().getId());
             dto.setClienteNombre(t.getCliente().getNombre());
+            dto.setClienteApellidos(t.getCliente().getApellidos());
+            dto.setClienteTelefono(t.getCliente().getTelefono());
+            dto.setClienteCorreo(t.getCliente().getCorreo());
         }
         if (t.getNivel() != null) {
             dto.setNivelNombre(t.getNivel().getNombre());
+            dto.setNivelPuntosMax(t.getNivel().getPuntosMax());
+
+            // Calcular puntos para recompensa
+            int puntosActuales = t.getPuntosAcumulados() != null ? t.getPuntosAcumulados() : 0;
+            int puntosMax = t.getNivel().getPuntosMax() != null ? t.getNivel().getPuntosMax() : 0;
+            dto.setPuntosParaRecompensa(Math.max(puntosMax - puntosActuales, 0));
+            dto.setRecompensasObtenidas(canjeRepository.countByTarjetaId(t.getId()));
         }
         return dto;
     }

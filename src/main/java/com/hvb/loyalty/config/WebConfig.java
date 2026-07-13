@@ -19,7 +19,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**")          // protege todo lo que empiece con /api/
                 .excludePathPatterns(
                         "/api/auth/**",              // login es público
-                        "/api/tarjetas/qr/**"        // la tarjeta digital del cliente es pública
+                        "/api/tarjetas/qr/**",       // la tarjeta digital del cliente es pública
+                        "/api/clientes"              // registro publico de nuevos
                 );
     }
 }

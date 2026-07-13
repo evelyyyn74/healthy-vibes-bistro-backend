@@ -17,6 +17,7 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+
     public UsuarioService(UsuarioRepository usuarioRepository) {
         this.usuarioRepository = usuarioRepository;
     }
@@ -33,12 +34,25 @@ public class UsuarioService {
         return aResponse(usuario);
     }
 
+
     public UsuarioResponseDTO crear(UsuarioRequestDTO dto) {
         if (dto.getPassword() == null || dto.getPassword().isBlank()) {
             throw new RuntimeException("La contraseña es obligatoria al crear un usuario");
         }
+
+        // Limpia el teléfono (quita espacios) antes de validar y guardar
+        if (dto.getTelefono() != null) {
+            dto.setTelefono(dto.getTelefono().replaceAll("\\s", ""));
+        }
+
         if (usuarioRepository.existsByUsuario(dto.getUsuario())) {
             throw new RuntimeException("Ya existe un usuario con ese nombre de usuario");
+        }
+
+        // Valida teléfono único (solo si mandaron teléfono)
+        if (dto.getTelefono() != null && !dto.getTelefono().isBlank()
+                && usuarioRepository.existsByTelefono(dto.getTelefono())) {
+            throw new RuntimeException("Ya existe un usuario con ese teléfono");
         }
 
         Usuario usuario = new Usuario();
@@ -49,14 +63,27 @@ public class UsuarioService {
         return aResponse(usuarioRepository.save(usuario));
     }
 
+
     public UsuarioResponseDTO actualizar(Long id, UsuarioRequestDTO dto) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Limpia el teléfono antes de validar y guardar
+        if (dto.getTelefono() != null) {
+            dto.setTelefono(dto.getTelefono().replaceAll("\\s", ""));
+        }
 
         if (dto.getUsuario() != null
                 && !dto.getUsuario().equals(usuario.getUsuario())
                 && usuarioRepository.existsByUsuario(dto.getUsuario())) {
             throw new RuntimeException("Ya existe un usuario con ese nombre de usuario");
+        }
+
+        // Valida teléfono único, pero permitiendo que conserve el suyo propio
+        if (dto.getTelefono() != null && !dto.getTelefono().isBlank()
+                && !dto.getTelefono().equals(usuario.getTelefono())
+                && usuarioRepository.existsByTelefono(dto.getTelefono())) {
+            throw new RuntimeException("Ya existe un usuario con ese teléfono");
         }
 
         UsuarioUtil.actualizarDatos(usuario, dto);
@@ -72,6 +99,17 @@ public class UsuarioService {
     public void cambiarEstado(Long id, Boolean activo) {
         Usuario usuario = usuarioRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        // Si se va a DESACTIVAR un ADMIN, verifica que no sea el último admin activo
+        if (Boolean.FALSE.equals(activo) && "ADMIN".equals(usuario.getRol())) {
+            long adminsActivos = usuarioRepository.findAll().stream()
+                    .filter(u -> "ADMIN".equals(u.getRol()) && Boolean.TRUE.equals(u.getActivo()))
+                    .count();
+            if (adminsActivos <= 1) {
+                throw new RuntimeException("No puedes desactivar al último administrador activo.");
+            }
+        }
+
         usuario.setActivo(activo);
         usuarioRepository.save(usuario);
     }

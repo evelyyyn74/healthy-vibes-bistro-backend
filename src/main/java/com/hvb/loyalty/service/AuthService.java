@@ -28,7 +28,13 @@ public class AuthService {
             throw new RuntimeException("Credenciales incorrectas");
         }
 
+        // Si las credenciales son correctas pero la cuenta está desactivada
+        if (Boolean.FALSE.equals(usuario.getActivo())) {
+            throw new RuntimeException("Tu cuenta está desactivada. Contacta al administrador.");
+        }
+
         String token = jwtUtil.generarToken(usuario.getUsuario(), usuario.getId());
         return new LoginResponseDTO(token, usuario.getId(), usuario.getNombre(), usuario.getRol());
     }
+
 }
