@@ -20,7 +20,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/api/auth/**",              // login es público
                         "/api/tarjetas/qr/**",       // la tarjeta digital del cliente es pública
-                        "/api/clientes"              // registro publico de nuevos
+                        "/api/clientes"              // registro publico de nuevos clientes
+
                 );
     }
 }

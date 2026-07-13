@@ -9,10 +9,10 @@ public class TarjetaResponseDTO {
     private Boolean activo;
     private Long clienteId;
     private String clienteNombre;
-    private String nivelNombre;
     private String clienteApellidos;
     private String clienteTelefono;
     private String clienteCorreo;
+    private String nivelNombre;
     private Integer nivelPuntosMax;
     private Integer puntosParaRecompensa;
     private Integer recompensasObtenidas;
@@ -38,9 +38,6 @@ public class TarjetaResponseDTO {
     public String getClienteNombre() { return clienteNombre; }
     public void setClienteNombre(String clienteNombre) { this.clienteNombre = clienteNombre; }
 
-    public String getNivelNombre() { return nivelNombre; }
-    public void setNivelNombre(String nivelNombre) { this.nivelNombre = nivelNombre; }
-
     public String getClienteApellidos() { return clienteApellidos; }
     public void setClienteApellidos(String clienteApellidos) { this.clienteApellidos = clienteApellidos; }
 
@@ -49,6 +46,9 @@ public class TarjetaResponseDTO {
 
     public String getClienteCorreo() { return clienteCorreo; }
     public void setClienteCorreo(String clienteCorreo) { this.clienteCorreo = clienteCorreo; }
+
+    public String getNivelNombre() { return nivelNombre; }
+    public void setNivelNombre(String nivelNombre) { this.nivelNombre = nivelNombre; }
 
     public Integer getNivelPuntosMax() { return nivelPuntosMax; }
     public void setNivelPuntosMax(Integer nivelPuntosMax) { this.nivelPuntosMax = nivelPuntosMax; }
