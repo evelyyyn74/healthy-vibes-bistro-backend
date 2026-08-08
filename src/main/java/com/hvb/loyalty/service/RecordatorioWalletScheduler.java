@@ -65,7 +65,8 @@ public class RecordatorioWalletScheduler {
                 System.out.println("[Recordatorio] Enviado a " + correo + " (tarjeta " + tarjeta.getCodigoQr() + ")");
             } catch (Exception e) {
                 System.err.println("[Recordatorio] Error enviando a " + correo + ": " + e.getMessage());
-                // No se marca como enviado: se reintenta en el siguiente ciclo
+                tarjeta.setRecordatorioEnviado(true);
+                tarjetaRepository.save(tarjeta);
             }
         }
     }
