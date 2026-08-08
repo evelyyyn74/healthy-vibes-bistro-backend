@@ -20,15 +20,18 @@ public class CanjeService {
     private final TarjetaRepository tarjetaRepository;
     private final UsuarioRepository usuarioRepository;
     private final PremioRepository premioRepository;
+    private final EmailService emailService;
 
     public CanjeService(CanjeRepository canjeRepository,
                         TarjetaRepository tarjetaRepository,
                         UsuarioRepository usuarioRepository,
-                        PremioRepository premioRepository) {
+                        PremioRepository premioRepository,
+                        EmailService emailService) {
         this.canjeRepository = canjeRepository;
         this.tarjetaRepository = tarjetaRepository;
         this.usuarioRepository = usuarioRepository;
         this.premioRepository = premioRepository;
+        this.emailService = emailService;
     }
 
     public List<CanjeResponseDTO> listar() {
@@ -83,7 +86,23 @@ public class CanjeService {
         premio.setCanjesRealizados(realizados + 1);
         premioRepository.save(premio);
 
-        return aResponse(canjeRepository.save(canje));
+        Canje guardado = canjeRepository.save(canje);
+
+        // Envía correo de confirmación si el cliente tiene correo
+        try {
+            Cliente cliente = tarjeta.getCliente();
+            if (cliente != null && cliente.getCorreo() != null && !cliente.getCorreo().isBlank()) {
+                emailService.enviarConfirmacionCanje(
+                    cliente.getCorreo(),
+                    cliente.getNombre(),
+                    premio.getNombre(),
+                    puntosDescontar,
+                    tarjeta.getPuntosAcumulados()
+                );
+            }
+        } catch (Exception ignored) {}
+
+        return aResponse(guardado);
     }
 
     public void eliminar(Long id) {

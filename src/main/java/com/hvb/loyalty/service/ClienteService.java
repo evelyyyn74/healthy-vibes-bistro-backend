@@ -16,13 +16,16 @@ public class ClienteService {
     private final ClienteRepository clienteRepository;
     private final TarjetaService tarjetaService;
     private final com.hvb.loyalty.repository.TarjetaRepository tarjetaRepository;
+    private final EmailService emailService;
 
     public ClienteService(ClienteRepository clienteRepository,
                           TarjetaService tarjetaService,
-                          com.hvb.loyalty.repository.TarjetaRepository tarjetaRepository) {
+                          com.hvb.loyalty.repository.TarjetaRepository tarjetaRepository,
+                          EmailService emailService) {
         this.clienteRepository = clienteRepository;
         this.tarjetaService = tarjetaService;
         this.tarjetaRepository = tarjetaRepository;
+        this.emailService = emailService;
     }
 
     public List<ClienteResponseDTO> listar() {
@@ -47,6 +50,11 @@ public class ClienteService {
 
         // Crea automáticamente la tarjeta del cliente
         tarjetaService.crearParaCliente(guardado);
+
+        // Envía correo de bienvenida si el cliente proporcionó correo
+        if (guardado.getCorreo() != null && !guardado.getCorreo().isBlank()) {
+            emailService.enviarBienvenida(guardado.getCorreo(), guardado.getNombre());
+        }
 
         return aResponse(guardado);
     }
